@@ -1,107 +1,58 @@
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
-from rest_framework.compat import authenticate
 from rest_framework.serializers import ModelSerializer, ValidationError, raise_errors_on_nested_writes
 from rest_framework import serializers
-from models import Usuario
+from .models import *
 from rest_framework.utils import model_meta
 import re
-from django.contrib.auth.password_validation import validate_password
-
-
-class AuthTokenSerializer(serializers.Serializer):
-	email = serializers.CharField(label=_("Email"),required=True)
-	password = serializers.CharField(
-		label=_("Password"),
-		style={'input_type': 'password'},
-		trim_whitespace=False,
-		required=True
-	)
-
-	def validate(self, attrs):
-		email = attrs.get('email')
-		password = attrs.get('password')
-
-		if email and password:
-			user = authenticate(request=self.context.get('request'),
-								email=email, password=password)
-			if not user:
-				msg = _('Unable to log in with provided credentials.')
-				raise serializers.ValidationError(msg, code='authorization')
-		else:
-			msg = _('Must include "email" and "password".')
-			raise serializers.ValidationError(msg, code='authorization')
-
-		attrs['user'] = user
-		return attrs
 
 
 class CreateUsuarioSerializer(ModelSerializer):
-    tipo_usuario = serializers.ChoiceField(choices=Usuario.TIPO_USUARIO)
     class Meta:
         model = Usuario
-        fields = ('id','nome','cpf_cnpj','email','password','tipo_usuario')
+        fields = ('id','name','email','password','foto','birthdate')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         usuario = Usuario(
             email = validated_data['email'],
-            nome = validated_data['nome'],
-            cpf_cnpj = validated_data['cpf_cnpj'],
-            tipo_usuario = validated_data['tipo_usuario']
+            name = validated_data['name'],
+            birthdate = validated_data['birthdate'],
+            foto = validated_data['foto'],
         )
         usuario.set_password(validated_data['password'])
         usuario.save()
         return usuario
 
-    def validate_cpf_cnpj(self,cpf_cnpj):
-        if Usuario.objects.filter(cpf_cnpj = cpf_cnpj).exists():
-            raise ValidationError('CPF/CNPJ já cadastrado!')
+    def validate_name(self,name):
+        if bool(re.search(r'\d',name)):
+            raise ValidationError('name inválido!')
 
-        if len(cpf_cnpj) < 11 or len(cpf_cnpj) > 14:
-            raise ValidationError('CPF/CNPJ inválido!')
+        if bool(re.search('[!-@[-_]',name)):
+            raise ValidationError('name inválido!')
 
-        if not cpf_cnpj.isdigit():
-            raise ValidationError('CPF/CNPJ inválido!')
-
-        return cpf_cnpj
-
-    def validate_nome(self,nome):
-        if bool(re.search(r'\d',nome)):
-            raise ValidationError('Nome inválido!')
-
-        if bool(re.search('[!-@[-_]',nome)):
-            raise ValidationError('Nome inválido!')
-
-        return nome
-
-    def validate_tipo_usuario(self, tipo_usuario):
-        if tipo_usuario != 'FISICA' and tipo_usuario != 'JURIDICA':
-            raise ValidationError('Tipo de Usuario inválido!')
-        return tipo_usuario
+        return name
 
 
 class ListUsuarioSerializer(ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ('id','nome','email','cpf_cnpj','telefone','endereco','foto',,'is_admin')
+        fields = ('id','name','email','foto','birthdate')
 
 
 class GetUpdateRemoveUsuarioSerializer(CreateUsuarioSerializer):
-    nome = serializers.CharField(required=False, max_length=255, allow_blank=False)
+    name = serializers.CharField(required=False, max_length=255, allow_blank=False)
+    birthdate = serializers.DateField(required=False)
     email = serializers.CharField(required=True,max_length=255, allow_blank=False)
-    telefone = serializers.CharField(required=False, max_length=14, allow_blank=False)
-    endereco = serializers.CharField(required=False, max_length=350, allow_blank=False)
     foto = serializers.ImageField(required=False, allow_empty_file=False, use_url=True)
     first_access = serializers.BooleanField(required=False)
     new_password = serializers.CharField(required=False,style={'input_type': 'password'},allow_blank=True,default='')
 
     class Meta:
         model = Usuario
-        fields = ('id','nome','telefone','email','endereco','cpf_cnpj', 'foto','new_password','first_access')
+        fields = ('id','name','email','foto','new_password','birthdate','first_access')
         extra_kwargs = {'email':{'write_only':True},
                         'new_password':{'write_only':True},
-                        'cpf_cnpj':{'read_only':True}}
+                        'first_access':{'read_only':True}}
 
     def update(self, instance, validated_data):
         raise_errors_on_nested_writes('update', self, validated_data)
@@ -127,13 +78,86 @@ class GetUpdateRemoveUsuarioSerializer(CreateUsuarioSerializer):
     def to_representation(self, obj):
         return {
             'id':obj.id,
-            'nome': obj.nome,
+            'name': obj.name,
             'email':obj.email,
-            'cpf_cnpj': obj.cpf_cnpj,
+            'birthdate': obj.birthdate,
             'is_admin':obj.is_admin,
-            'telefone': obj.telefone,
-            'endereco': obj.endereco,
             'foto': obj.foto.url if obj.foto else None,
             'last_login':obj.last_login,
             'first_access':obj.first_access
         }
+
+class UserClubSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserClub
+        fields = ('__all__')
+
+class RealClubSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RealClub
+        fields = ('__all__')
+
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('__all__')
+
+class PlayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ('__all__')
+
+class RoundSerializer(modelsserializers.ModelSerializer: 
+    class Meta:
+        model = Round
+        fields = ('__all__')
+
+class MatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = ('__all__')
+
+class FormationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Formation
+        fields = ('__all__')
+
+class StatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Stat
+        fields = ('__all__')
+
+class LeagueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = League
+        fields = ('__all__')
+
+class FMTPosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FMTPos
+        fields = ('__all__')
+
+class PlayerStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlayerStats
+        fields = ('__all__')
+
+class SquadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Squad
+        fields = ('__all__')
+
+class SelectedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Selected
+        fields = ('club', 'player', 'round')
+
+class ClubLeagueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClubLeague
+        fields = ('club', 'league')
+
+class PlayerPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlayerPrice
+        fields = ('player','round','price','captain')
