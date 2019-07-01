@@ -107,7 +107,7 @@ class PlayerSerializer(serializers.ModelSerializer):
         model = Player
         fields = ('__all__')
 
-class RoundSerializer(modelsserializers.ModelSerializer: 
+class RoundSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Round
         fields = ('__all__')
@@ -150,14 +150,14 @@ class SquadSerializer(serializers.ModelSerializer):
 class SelectedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Selected
-        fields = ('club', 'player', 'round')
+        fields = ('__all__')
 
 class ClubLeagueSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClubLeague
-        fields = ('club', 'league')
+        fields = ('__all__')
 
 class PlayerPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerPrice
-        fields = ('player','round','price','captain')
+        fields = ('__all__')

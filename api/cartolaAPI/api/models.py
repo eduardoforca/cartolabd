@@ -89,81 +89,81 @@ class Usuario(AbstractBaseUser):
 		return self.first_access
 
 class UserClub(models.Model):
-    nome = models.CharField(max_length=60)
-    color1 = models.CharField(max_length=7, default='#FF0000')
-    color2 = models.CharField(max_length=7, default='#FFFFFF')
-    color3 = models.CharField(max_length=7, default='#000000')
+    nome = models.CharField(max_length=60, null=True, blank=True)
+    color1 = models.CharField(max_length=7, default='#FF0000', null=True, blank=True)
+    color2 = models.CharField(max_length=7, default='#FFFFFF', null=True, blank=True)
+    color3 = models.CharField(max_length=7, default='#000000', null=True, blank=True)
     crest = models.ImageField(upload_to="fotos/crest", blank=True,null=True)
-    owner = models.ForeignKey("Usuario", on_delete=models.SET_NULL)
+    owner = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, blank=True)
 
 class RealClub(models.Model):
-    nome = models.CharField(max_length=60)
+    nome = models.CharField(max_length=60, null=True, blank=True)
     crest = models.ImageField(upload_to="fotos/crest", blank=True,null=True)
-    short_name = models.CharField(max_length=3)
+    short_name = models.CharField(max_length=3, null=True, blank=True)
 
 class Position(models.Model):
-    nome = models.CharField(max_length=60)
-    cod_pos = models.CharField(max_length=3)
+    nome = models.CharField(max_length=60, null=True, blank=True)
+    cod_pos = models.CharField(max_length=3, null=True, blank=True)
 
 class Player(models.Model):
-    nome = models.CharField(max_length=60)
-    club = models.ForeignKey(RealClub, on_delete=models.SET_NULL)
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL)
+    nome = models.CharField(max_length=60, null=True, blank=True)
+    club = models.ForeignKey(RealClub, on_delete=models.SET_NULL, null=True, blank=True)
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Round(models.Model): 
-    round_number = models.IntegerField()
-    season = models.IntegerField()
+    round_number = models.IntegerField(null=True, blank=True)
+    season = models.IntegerField(null=True, blank=True)
 
 class Match(models.Model):
-    datetime = models.DateTimeField(auto_now=False, auto_now_add=False)
-    home_score = models.IntegerField()
-    away_score = models.IntegerField()
-    home_club = models.ForeignKey(RealClub, on_delete=models.SET_NULL)
-    away_club = models.ForeignKey(RealClub, on_delete=models.SET_NULL)
-    _round = models.ForeignKey(Round, on_delete=models.SET_NULL)
+    datetime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    home_score = models.IntegerField(null=True, blank=True)
+    away_score = models.IntegerField(null=True, blank=True)
+    home_club = models.ForeignKey(RealClub, on_delete=models.SET_NULL, null=True, blank=True, related_name='home_club')
+    away_club = models.ForeignKey(RealClub, on_delete=models.SET_NULL, null=True, blank=True, related_name='away_club')
+    _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Formation(models.Model):
-    nome = models.CharField(max_length=5)
+    nome = models.CharField(max_length=5, null=True, blank=True)
 
 class Stat(models.Model):
-    nome = models.CharField(max_length=60)
-    desc = models.CharField(max_length=300)
-    points = models.DecimalField()
+    nome = models.CharField(max_length=60, null=True, blank=True)
+    desc = models.CharField(max_length=300, null=True, blank=True)
+    points = models.DecimalField(decimal_places=2, max_digits=5,null=True, blank=True)
 
 
 class League(models.Model):
-    color1 = models.CharField(max_length=7, default='#FF0000')
-    color2 = models.CharField(max_length=7, default='#FFFFFF')
-    color3 = models.CharField(max_length=7, default='#000000')
+    color1 = models.CharField(max_length=7, default='#FF0000', null=True, blank=True)
+    color2 = models.CharField(max_length=7, default='#FFFFFF', null=True, blank=True)
+    color3 = models.CharField(max_length=7, default='#000000', null=True, blank=True)
     crest = models.ImageField(upload_to="fotos/crest", blank=True,null=True)
-    creator = models.ForeignKey(Usuario, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
 
 class FMTPos(models.Model):
-    amount = models.IntegerField()
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL)
-    formation = models.ForeignKey(Formation, on_delete=models.SET_NULL)
+    amount = models.IntegerField(null=True, blank=True)
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True)
+    formation = models.ForeignKey(Formation, on_delete=models.SET_NULL, null=True, blank=True)
 
 class PlayerStats(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.SET_NULL)
-    stat = models.ForeignKey(Stat, on_delete=models.SET_NULL)
-    _round = models.ForeignKey(Round, on_delete=models.SET_NULL)
+    player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
+    stat = models.ForeignKey(Stat, on_delete=models.SET_NULL, null=True, blank=True)
+    _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Squad(models.Model):
-    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL)
-    fmt = models.ForeignKey(FMTPos, on_delete=models.SET_NULL)
-    _round = models.ForeignKey(Round, on_delete=models.SET_NULL)
+    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL, null=True, blank=True)
+    fmt = models.ForeignKey(FMTPos, on_delete=models.SET_NULL, null=True, blank=True)
+    _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Selected(models.Model):
-    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL)
-    player = models.ForeignKey(Player, on_delete=models.SET_NULL)
-    _round = models.ForeignKey(Round, on_delete=models.SET_NULL)
+    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL, null=True, blank=True)
+    player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
+    _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
 
 class ClubLeague(models.Model):
-    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL)
-    league = models.ForeignKey(League, on_delete=models.SET_NULL)
+    club = models.ForeignKey(UserClub, on_delete=models.SET_NULL, null=True, blank=True)
+    league = models.ForeignKey(League, on_delete=models.SET_NULL, null=True, blank=True)
 
 class PlayerPrice(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.SET_NULL)
-    _round = models.ForeignKey(Round, on_delete=models.SET_NULL)
-    price = models.IntegerField()
-    captain = models.SmallIntegerField()
+    player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
+    _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    captain = models.SmallIntegerField(null=True, blank=True)
