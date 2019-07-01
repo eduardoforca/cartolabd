@@ -13,7 +13,7 @@
         </q-btn>
 
         <q-toolbar-title>
-          Quasar App
+          {{$route.name}}
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -26,50 +26,44 @@
       content-class="bg-grey-2"
     >
       <q-list>
-        <q-item-label header>Essential Links</q-item-label>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
+        <q-item clickable to="home">
           <q-item-section avatar>
-            <q-icon name="school" />
+            <q-icon name="home" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Docs</q-item-label>
-            <q-item-label caption>quasar.dev</q-item-label>
+            <q-item-label>Home</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://github.com/quasarframework/">
+        <q-item clickable>
           <q-item-section avatar>
-            <q-icon name="code" />
+            <q-icon name="fas fa-tshirt" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Github</q-item-label>
-            <q-item-label caption>github.com/quasarframework</q-item-label>
+            <q-item-label>Equipe</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://chat.quasar.dev">
+        <q-item clickable>
           <q-item-section avatar>
-            <q-icon name="chat" />
+            <q-icon name="fas fa-trophy" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Discord Chat Channel</q-item-label>
-            <q-item-label caption>chat.quasar.dev</q-item-label>
+            <q-item-label>Ligas</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://forum.quasar.dev">
+        <q-item clickable>
           <q-item-section avatar>
-            <q-icon name="record_voice_over" />
+            <q-icon name="fas fa-user" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Forum</q-item-label>
-            <q-item-label caption>forum.quasar.dev</q-item-label>
+            <q-item-label>Perfil</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://twitter.com/quasarframework">
+        <q-item clickable>
           <q-item-section avatar>
-            <q-icon name="rss_feed" />
+            <q-icon name="fas fa-futbol" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Twitter</q-item-label>
-            <q-item-label caption>@quasarframework</q-item-label>
+            <q-item-label>Partidas</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -82,17 +76,13 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
-
 export default {
-  name: 'MyLayout',
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop
     }
   },
   methods: {
-    openURL
   }
 }
 </script>
