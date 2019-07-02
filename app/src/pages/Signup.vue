@@ -56,9 +56,4 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.card-title {
-  font-size: 16px;
-  letter-spacing: 1.7px;
-  font-weight: 300;
-}
 </style>

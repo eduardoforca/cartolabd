@@ -88,4 +88,9 @@ export default {
 </script>
 
 <style>
+.card-title {
+  font-size: 16px;
+  letter-spacing: 1.7px;
+  font-weight: 300;
+}
 </style>
