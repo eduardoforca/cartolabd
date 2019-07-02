@@ -16,7 +16,7 @@
           {{$route.name}}
         </q-toolbar-title>
 
-        <div>{{ $store.state.user.user.name }}</div>
+        <q-btn color="accent" @click="logout">Logout</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -83,6 +83,10 @@ export default {
     }
   },
   methods: {
+    logout () {
+      this.$store.dispatch('user/logoutUser')
+      this.$router.go('/')
+    }
   }
 }
 </script>
