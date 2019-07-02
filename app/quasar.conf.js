@@ -51,7 +51,8 @@ module.exports = function (ctx) {
         'QColor',
         'QSelect',
         'QAvatar',
-        'QDialog'
+        'QDialog',
+        'QUploader'
       ],
 
       directives: [

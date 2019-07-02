@@ -1,7 +1,11 @@
 <template>
-  <div v-if="$store.state.user.team">
-    Você ainda não tem um time
-    <q-btn to="new">Criar Time</q-btn>
+  <div v-if="!$store.state.user.team" class="q-pa-lg row items-start justify-between">
+    <div class="column items-center full-width">
+      <h6>
+        Você ainda não tem um time
+      </h6>
+      <q-btn to="new" color="primary">Criar Time</q-btn>
+    </div>
   </div>
   <div v-else class="q-pa-lg row items-start justify-between">
     <div class="col-md-4 col-12">

@@ -30,7 +30,15 @@ const routes = [
           { path: 'manage', component: () => import('components/team/TeamManager.vue'), name: 'Gerenciar Time' }
         ]
       },
-      { path: 'leagues', component: () => import('pages/Leagues.vue'), name: 'Ligas' },
+      { path: 'leagues',
+        component: () => import('pages/Leagues.vue'),
+        name: 'Ligas',
+        children: [
+          { path: '', component: () => import('components/league/LeaguesHome.vue'), name: 'Minhas Ligas' },
+          { path: 'new', component: () => import('components/league/LeagueBuilder.vue'), name: 'Nova Liga' },
+          { path: 'manage/:league_id', component: () => import('components/league/LeagueManager.vue'), name: 'Gerenciar Liga' }
+        ]
+      },
       { path: 'matches', component: () => import('pages/Matches.vue'), name: 'Partidas' },
       { path: 'profile', component: () => import('pages/Profile.vue'), name: 'Perfil' }
     ]

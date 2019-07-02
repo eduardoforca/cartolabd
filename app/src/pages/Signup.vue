@@ -12,6 +12,12 @@
             :rules="[ (val) => val && val.length > 0 || 'Insira um email válido']"
             />
             <q-input
+            v-model="name"
+            label="Nome"
+            lazy-rules
+            :rules="[ (val) => val && val.length > 0 || 'Insira um nome válido']"
+            />
+            <q-input
             v-model="password"
             label="Senha"
             lazy-rules
@@ -49,6 +55,7 @@
 export default {
   data: () => ({
     email: '',
+    name: '',
     password: '',
     showPwd: false,
     birthdate: ''
