@@ -47,7 +47,8 @@ module.exports = function (ctx) {
         'QCheckbox',
         'QDate',
         'QPopupProxy',
-        'QSeparator'
+        'QSeparator',
+        'QColor'
       ],
 
       directives: [

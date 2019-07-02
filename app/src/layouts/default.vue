@@ -16,7 +16,7 @@
           {{$route.name}}
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>{{ $store.state.user.user.name }}</div>
       </q-toolbar>
     </q-header>
 
@@ -26,7 +26,7 @@
       content-class="bg-grey-2"
     >
       <q-list>
-        <q-item clickable to="home">
+        <q-item clickable to="/home">
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
@@ -34,7 +34,7 @@
             <q-item-label>Home</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable>
+        <q-item clickable to="/myteam">
           <q-item-section avatar>
             <q-icon name="fas fa-tshirt" />
           </q-item-section>
@@ -42,7 +42,7 @@
             <q-item-label>Equipe</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable>
+        <q-item clickable to="/leagues">
           <q-item-section avatar>
             <q-icon name="fas fa-trophy" />
           </q-item-section>
@@ -50,20 +50,20 @@
             <q-item-label>Ligas</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable>
-          <q-item-section avatar>
-            <q-icon name="fas fa-user" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Perfil</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable>
+        <q-item clickable to="/matches">
           <q-item-section avatar>
             <q-icon name="fas fa-futbol" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Partidas</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable to="/profile">
+          <q-item-section avatar>
+            <q-icon name="fas fa-user" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Perfil</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

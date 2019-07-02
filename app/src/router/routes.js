@@ -4,7 +4,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/default.vue'),
     redirect: '/home',
-    beforeEnter: async (to, from, next) => {
+    beforeEnter: (to, from, next) => {
       store.dispatch('user/fetchUser')
       if (store.state.user.user === null) {
         next('/login')
@@ -13,13 +13,32 @@ const routes = [
       }
     },
     children: [
-      { path: 'home', component: () => import('pages/Index.vue'), name: 'Home' }
+      { path: 'home', component: () => import('pages/Index.vue'), name: 'Home' },
+      { path: 'myteam',
+        component: () => import('pages/Team.vue'),
+        name: 'Equipe',
+        redirect: '/myteam/manage',
+        beforeEnter: (to, from, next) => {
+          if (store.state.user.team === null && to.path !== '/myteam/new') {
+            next('/myteam/new')
+          } else {
+            next()
+          }
+        },
+        children: [
+          { path: 'new', component: () => import('components/team/TeamBuilder.vue'), name: 'Novo Time' },
+          { path: 'manage', component: () => import('components/team/TeamManager.vue'), name: 'Gerenciar Time' }
+        ]
+      },
+      { path: 'leagues', component: () => import('pages/Leagues.vue'), name: 'Ligas' },
+      { path: 'matches', component: () => import('pages/Matches.vue'), name: 'Partidas' },
+      { path: 'profile', component: () => import('pages/Profile.vue'), name: 'Perfil' }
     ]
   },
   {
     path: '/login',
     component: () => import('layouts/Login.vue'),
-    beforeEnter: async (to, from, next) => {
+    beforeEnter: (to, from, next) => {
       store.dispatch('user/fetchUser')
       if (store.state.user.user !== null) {
         next('/')
