@@ -29,8 +29,8 @@
         </div>
       </q-card-section>
       <q-card-section class="q-mt-md">
-        <q-list bordered>
-          <q-item v-for="i in members" :key="i['id']" class="q-my-sm">
+        <q-list bordered separator>
+          <q-item v-for="i in members" :key="i['id']">
             <q-item-section avatar>
               <badge height="50px"/>
             </q-item-section>
@@ -47,8 +47,8 @@
     <q-dialog v-model="addTeams">
       <q-card style="min-width: 40vw">
         <q-card-section class="bg-secondary card-title text-uppercase text-white">Adicionar Membros</q-card-section>
-        <q-list bordered>
-          <q-item v-for="i in users" :key="i['id']" class="q-my-sm">
+        <q-list bordered separator>
+          <q-item v-for="i in users" :key="i['id']">
             <q-item-section avatar>
               <badge height="50px"/>
             </q-item-section>
@@ -73,8 +73,14 @@ export default {
     LeagueFormCard
   },
   data: () => ({
-    members: [{ id: 1, name: 'Peladeiros' }],
-    users: [{ id: 1, name: 'Peladeiros' }],
+    members: [
+      { id: 1, name: 'Peladeiros' },
+      { id: 2, name: 'Peladeiros' }
+    ],
+    users: [
+      { id: 1, name: 'Peladeiros' },
+      { id: 2, name: 'Peladeiros' }
+    ],
     editing: false,
     addTeams: false
   }),
