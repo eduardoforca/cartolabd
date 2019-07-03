@@ -26,6 +26,19 @@
       content-class="bg-grey-2"
     >
       <q-list>
+        <q-item class="bg-primary  q-pb-md">
+          <q-item-section avatar>
+            <div class="row justify-center q-pt-md">
+              <div class="sidebar-avatar">
+                <img :src="$store.state.user.user.foto ? $store.state.user.user.foto : ''"/>
+              </div>
+            </div>
+          </q-item-section>
+          <q-item-section class="card-title text-uppercase text-white">
+            <q-item-label>{{$store.state.user.user.name}}</q-item-label>
+            <q-item-label caption class="text-white text-lowercase">{{$store.state.user.user.email}}</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable to="/home">
           <q-item-section avatar>
             <q-icon name="home" />
@@ -96,5 +109,15 @@ export default {
   font-size: 16px;
   letter-spacing: 1.7px;
   font-weight: 300;
+}
+.sidebar-avatar{
+  width: 80px;
+  height: 80px;
+}
+.sidebar-avatar img {
+  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

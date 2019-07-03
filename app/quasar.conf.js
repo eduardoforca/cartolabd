@@ -52,7 +52,9 @@ module.exports = function (ctx) {
         'QSelect',
         'QAvatar',
         'QDialog',
-        'QUploader'
+        'QUploader',
+        'QInnerLoading',
+        'QSpinner'
       ],
 
       directives: [
