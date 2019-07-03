@@ -113,8 +113,9 @@ export default {
                 }
               })
             if (response.status === 201) {
-              this.$store.dispatch('user/loginUser', { user: response.data })
+              this.$store.commit('user/setUser', { user: response.data, keep: true })
               this.$router.go('/')
+              // this.$router.push('/login')
             } else {
               throw response.statusText
             }

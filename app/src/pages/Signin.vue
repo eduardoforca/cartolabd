@@ -16,7 +16,7 @@
             label="Senha"
             lazy-rules
             :type="!showPwd ? 'password' : 'text'"
-            :rules="[ (val) => val && val.length > 6 || 'Insira uma senha válida']"
+            :rules="[ (val) => val && val.length >= 6 || 'Insira uma senha válida']"
             >
             <template v-slot:append>
               <q-icon
@@ -31,7 +31,7 @@
         </div>
       </q-card-section>
       <q-card-actions vertical align="center">
-        <q-btn color="secondary" to="home">Entrar</q-btn>
+        <q-btn color="secondary" @click="login">Entrar</q-btn>
         <q-btn outline color="primary" size="12px" to="sign">Não sou cadastrado</q-btn>
       </q-card-actions>
     </q-card>
@@ -43,8 +43,30 @@ export default {
     email: '',
     password: '',
     showPwd: false,
-    saveCreds: true
-  })
+    saveCreds: true,
+    loading: false
+  }),
+  methods: {
+    async login () {
+      this.loading = true
+      try {
+        let response = await this.$api.post('/autorizar/',
+          {
+            username: this.email,
+            password: this.password
+          })
+        if (response.status === 200) {
+          await this.$store.dispatch('user/loginUser', { token: response.data, keep: this.saveCreds })
+          this.$router.go('/home')
+          this.loading = false
+        } else {
+          throw response.statusText
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
 }
 </script>
 <style lang="css" scoped>
