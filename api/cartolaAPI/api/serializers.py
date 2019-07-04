@@ -4,6 +4,8 @@ from rest_framework import serializers
 from .models import *
 from rest_framework.utils import model_meta
 import re
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 class CreateUsuarioSerializer(ModelSerializer):
@@ -15,9 +17,8 @@ class CreateUsuarioSerializer(ModelSerializer):
     def create(self, validated_data):
         usuario = Usuario(
             email = validated_data['email'],
-            name = validated_data['name'],
-            birthdate = validated_data['birthdate'],
-            foto = validated_data['foto'],
+            name = validated_data['name'], 
+            **validated_data
         )
         usuario.set_password(validated_data['password'])
         usuario.save()
@@ -82,7 +83,7 @@ class GetUpdateRemoveUsuarioSerializer(CreateUsuarioSerializer):
             'email':obj.email,
             'birthdate': obj.birthdate,
             'is_admin':obj.is_admin,
-            'foto': obj.foto.url if obj.foto else None,
+            'foto': static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + obj.foto.url if obj.foto else None,
             'last_login':obj.last_login,
             'first_access':obj.first_access
         }

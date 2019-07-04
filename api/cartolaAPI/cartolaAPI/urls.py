@@ -22,7 +22,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from api.views import ListCreateUsuarioAPIView, GetUpdateRemoveUsuarioAPIView
+from api.views import ListCreateUsuarioAPIView, GetUpdateRemoveUsuarioAPIView, GetUser
 
 from rest_framework.authtoken import views as ObtainAuthToken
 
@@ -43,6 +43,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('v1/', include('api.urls', namespace='all')),
     path('v1/usuarios/', ListCreateUsuarioAPIView.as_view(),name='create-list-usuario'),
+    path('v1/usuarios/me', GetUser.as_view(),name='get-usuario'),
     path('v1/usuarios/<int:id_usuario>/', GetUpdateRemoveUsuarioAPIView.as_view(), name='detail-usuario'),
     path('v1/autorizar/', ObtainAuthToken.obtain_auth_token, name='autorizar'),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
