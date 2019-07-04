@@ -1,0 +1,12 @@
+mysql:
+  image: mysql
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: grupobd37
+    MYSQL_USER: grupobd37
+    MYSQL_PASSWORD: grupobd37
+    MYSQL_DATABASE: grupobd37
+  volumes:
+    - "./datadir:/var/lib/mysql"
+  ports:
+  - "3306:3306"
