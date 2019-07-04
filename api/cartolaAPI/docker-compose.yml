@@ -9,4 +9,4 @@ mysql:
   volumes:
     - "./datadir:/var/lib/mysql"
   ports:
-  - "3306:3306"
+    - "4200:3306"
