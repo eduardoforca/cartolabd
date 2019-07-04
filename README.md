@@ -8,7 +8,7 @@ Para rodar o front-end localmente são necessários os seguintes requisitos:
 * Node.js >= 8.9 NPM >= 5
 * Quasar CLI v1
 
-Para instalar o Quasar CLI com o NPM instalado execute na linha de comando:
+Para instalar o Quasar CLI com o NPM instalado, execute na linha de comando:
 
 `npm install -g @quasar/cli`
 
