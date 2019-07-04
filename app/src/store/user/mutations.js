@@ -7,6 +7,10 @@ export function setUser (state, { user, keep = false }) {
   state.user = user
 }
 
+export function setTeam (state, { team }) {
+  state.team = team
+}
+
 export function setToken (state, { token, keep = false }) {
   if (keep) {
     window.localStorage.setItem('token', token)
@@ -26,4 +30,8 @@ export function unsetUser (state) {
   window.localStorage.removeItem('user')
   window.sessionStorage.removeItem('user')
   state.user = null
+}
+
+export function unsetTeam (state) {
+  state.team = null
 }

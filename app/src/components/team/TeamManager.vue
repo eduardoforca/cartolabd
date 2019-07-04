@@ -16,9 +16,9 @@
             <badge/>
             <div class="column q-ma-md items-start">
               <span class="card-title text-center full-width">Nome</span>
-              <span class="text-bold text-center full-width">Meu Time</span>
+              <span class="text-bold text-center full-width">{{this.$store.state.user.team.nome}}</span>
               <span class="card-title text-center full-width">Patrimônio Líquido</span>
-              <span class="text-bold text-center full-width">R$ 100</span>
+              <span class="text-bold text-center full-width">{{this.$store.state.user.team.networth}}</span>
             </div>
           </div>
           <div class="row justify-center">
@@ -96,7 +96,12 @@
       </q-card-section>
     </q-card>
     <q-dialog v-model="editing">
-      <team-form-card style="min-width: 60vw" @save="saveTeam"/>
+      <div class="relative-position" style="min-width: 60vw">
+        <team-form-card :initial-value="this.$store.state.user.team" @save="saveTeam"/>
+        <q-inner-loading :showing="loading" class="full-width">
+          <q-spinner size="50px" color="primary" />
+        </q-inner-loading>
+      </div>
     </q-dialog>
   </div>
 </template>
@@ -121,13 +126,29 @@ export default {
     ],
     formation: { label: '3-4-3', value: [{ cod_pos: 'DEF', amount: 3 }, { cod_pos: 'MEI', amount: 4 }, { cod_pos: 'ATA', amount: 3 }] },
     squad: [],
-    editing: false
+    editing: false,
+    loading: false
   }),
   mounted () {
   },
   methods: {
-    saveTeam () {
-      this.editing = false
+    async saveTeam (team) {
+      this.loading = true
+      try {
+        let response = await this.$api.put(
+          `/userClub/${this.$store.state.user.team.id}/`,
+          { ...team, owner: this.$store.state.user.user.id })
+        if (response.status === 200) {
+          this.$store.commit('user/setTeam', { team: response.data })
+          this.editing = false
+          this.loading = false
+        } else {
+          throw response.statusText
+        }
+      } catch (e) {
+        this.loading = false
+        console.log(e)
+      }
     }
   },
   computed: {

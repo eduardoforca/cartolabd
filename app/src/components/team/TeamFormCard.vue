@@ -3,9 +3,9 @@
     <q-card-section class="bg-secondary card-title text-uppercase text-white">Modificar Time</q-card-section>
     <q-card-section>
       <div class="q-px-md q-pt-md">
-        <q-form>
+        <q-form ref="myForm">
           <q-input
-          v-model="name"
+          v-model="nome"
           label="Nome"
           lazy-rules
           :rules="[ (val) => val && val.length > 0 || 'Insira um nome válido']"
@@ -63,7 +63,7 @@
       </div>
     </q-card-section>
     <q-card-actions vertical align="center">
-      <q-btn color="secondary" @click="$emit('save', aTeam)">Salvar</q-btn>
+      <q-btn color="secondary" @click="save">Salvar</q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -74,7 +74,7 @@ export default {
       type: Object,
       default () {
         return {
-          name: '',
+          nome: '',
           color1: '#6c00d6',
           color2: '#ffffff',
           color3: '#000000',
@@ -84,14 +84,14 @@ export default {
     }
   },
   data: () => ({
-    name: '',
+    nome: '',
     color1: '#6c00d6',
     color2: '#ffffff',
     color3: '#000000',
     selectedCrest: 1
   }),
   mounted () {
-    this.name = this.initialValue.name
+    this.nome = this.initialValue.nome
     this.color1 = this.initialValue.color1
     this.color2 = this.initialValue.color2
     this.color3 = this.initialValue.color3
@@ -114,12 +114,23 @@ export default {
   computed: {
     aTeam () {
       return {
-        name: this.name,
+        // crest: this.selectedCrest,
+        nome: this.nome,
         color1: this.color1,
         color2: this.color2,
-        color3: this.color3,
-        crest: this.selectedCrest
+        color3: this.color3
       }
+    }
+  },
+  methods: {
+    save () {
+      this.$refs.myForm.validate().then(
+        success => {
+          if (success) {
+            this.$emit('save', this.aTeam)
+          }
+        }
+      )
     }
   }
 }

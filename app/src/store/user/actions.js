@@ -28,6 +28,10 @@ export function setUser ({ commit, dispatch, state, getters }, { user }) {
   commit('setUser', { user: user })
 }
 
+export function setTeam ({ commit, dispatch, state, getters }, { team }) {
+  commit('setTeam', { team: team })
+}
+
 export function logoutUser ({ commit }) {
   commit('unsetUser')
   commit('unsetToken')

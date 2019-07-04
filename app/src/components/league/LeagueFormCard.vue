@@ -114,11 +114,11 @@ export default {
   computed: {
     aLeague () {
       return {
-        name: this.name,
+        // name: this.name,
+        // crest: this.selectedCrest,
         color1: this.color1,
         color2: this.color2,
-        color3: this.color3,
-        crest: this.selectedCrest
+        color3: this.color3
       }
     }
   }
