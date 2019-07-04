@@ -1,10 +1,22 @@
 from .models import *
 from .serializers import *
 from .serializers import CreateUsuarioSerializer, GetUpdateRemoveUsuarioSerializer, ListUsuarioSerializer
+from rest_framework.generics import ListAPIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import viewsets
+
+class GetUser(ListAPIView):
+    def get(self, request, *args, **kwargs):
+        # try:
+        user = Usuario.objects.get(pk=request.user.pk)
+        serializer = GetUpdateRemoveUsuarioSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        # except:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class ListCreateUsuarioAPIView(ListCreateAPIView):
 	queryset = Usuario.objects.all()

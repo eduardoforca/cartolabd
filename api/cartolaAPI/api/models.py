@@ -93,8 +93,9 @@ class UserClub(models.Model):
     color1 = models.CharField(max_length=7, default='#FF0000', null=True, blank=True)
     color2 = models.CharField(max_length=7, default='#FFFFFF', null=True, blank=True)
     color3 = models.CharField(max_length=7, default='#000000', null=True, blank=True)
-    crest = models.ImageField(upload_to="fotos/crest", blank=True,null=True)
+    crest = models.IntegerField(default=1)
     owner = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, blank=True)
+    net_worth = models.IntegerField(default=100)
 
 class RealClub(models.Model):
     nome = models.CharField(max_length=60, null=True, blank=True)
@@ -132,10 +133,11 @@ class Stat(models.Model):
 
 
 class League(models.Model):
+    name = models.CharField(max_length=60, blank=True, null=True)
     color1 = models.CharField(max_length=7, default='#FF0000', null=True, blank=True)
     color2 = models.CharField(max_length=7, default='#FFFFFF', null=True, blank=True)
     color3 = models.CharField(max_length=7, default='#000000', null=True, blank=True)
-    crest = models.ImageField(upload_to="fotos/crest", blank=True,null=True)
+    crest = models.IntegerField(default=1)
     creator = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
 
 class FMTPos(models.Model):
