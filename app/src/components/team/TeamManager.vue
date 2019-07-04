@@ -13,7 +13,11 @@
         <q-card-section class="bg-secondary card-title text-uppercase text-white">Meu Time</q-card-section>
         <q-card-section>
           <div class="row justify-around">
-            <badge/>
+            <badge
+            :color1="this.$store.state.user.team.color1"
+            :color2="this.$store.state.user.team.color2"
+            :color3="this.$store.state.user.team.color3"
+            />
             <div class="column q-ma-md items-start">
               <span class="card-title text-center full-width">Nome</span>
               <span class="text-bold text-center full-width">{{this.$store.state.user.team.nome}}</span>
@@ -44,54 +48,27 @@
     </div>
     <q-card class="col-md-7 col-12" style="max-width: 800px">
       <q-card-section class="bg-secondary card-title text-uppercase text-white">Escalação</q-card-section>
-      <q-card-section class="q-my-md">
+      <q-card-section class="q-my-md relative-position">
         <q-select outlined v-model="formation" :options="formations" label="Formação" />
+        <q-inner-loading :showing="loadingFormations">
+          <q-spinner size="50px" color="primary" />
+        </q-inner-loading>
       </q-card-section>
       <q-card-section>
-        <q-list bordered>
-          <q-item-label header>Goleiro</q-item-label>
-          <q-item class="q-my-sm" clickable>
-            <q-item-section avatar v-if="!gks[0]" >
-              <q-avatar icon="add"></q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="gks[0]">{{gks[0].name}}</q-item-label>
-              <q-item-label v-else>Comprar Goleiro</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-separator/>
-          <q-item-label header>Defensores</q-item-label>
-          <q-item v-for="i in formation.value[0].amount" :key="'def' + i" class="q-my-sm" clickable>
-            <q-item-section avatar v-if="!def[i]" >
-              <q-avatar icon="add"></q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="def[i]">{{def[i].name}}</q-item-label>
-              <q-item-label v-else>Comprar Defensor</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-separator/>
-          <q-item-label header>Meio-campistas</q-item-label>
-          <q-item v-for="i in formation.value[1].amount" :key="'mei' + i" class="q-my-sm" clickable>
-            <q-item-section avatar v-if="!mei[i]" >
-              <q-avatar icon="add"></q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="mei[i]">{{mei[i].name}}</q-item-label>
-              <q-item-label v-else>Comprar Meio-campista</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-separator/>
-          <q-item-label header>Atacantes</q-item-label>
-          <q-item v-for="i in formation.value[2].amount" :key="'ata' + i" class="q-my-sm" clickable>
-            <q-item-section avatar v-if="!ata[i]" >
-              <q-avatar icon="add"></q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label v-if="ata[i]">{{ata[i].name}}</q-item-label>
-              <q-item-label v-else>Comprar Atacante</q-item-label>
-            </q-item-section>
-          </q-item>
+        <q-list bordered v-if="formation">
+          <div v-for="pos in positions" :key="pos.id">
+            <q-separator/>
+            <q-item-label header>{{pos.nome}}</q-item-label>
+            <q-item v-for="i in formation.value[pos.id]" :key="pos.id + i" class="q-my-sm" clickable @click="buyPlayers = true">
+              <q-item-section avatar v-if="!getPos(pos.id)[i]" >
+                <q-avatar icon="add"></q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label v-if="getPos(pos.id)[i]">{{getPos(pos.id)[i].name}}</q-item-label>
+                <q-item-label v-else>Comprar {{pos.nome}}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
         </q-list>
       </q-card-section>
     </q-card>
@@ -102,6 +79,31 @@
           <q-spinner size="50px" color="primary" />
         </q-inner-loading>
       </div>
+    </q-dialog>
+    <q-dialog v-model="buyPlayers">
+      <q-card style="min-width: 40vw" class="relative-position">
+        <q-card-section class="bg-secondary card-title text-uppercase text-white">Comprar Jogadores</q-card-section>
+        <q-list bordered separator>
+          <q-item v-for="i in 0" :key="i['id']">
+            <q-item-section avatar>
+              <!-- <badge height="50px"
+              :color1="i.color1"
+              :color2="i.color2"
+              :color3="i.color3"
+              /> -->
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{i['nome']}}</q-item-label>
+            </q-item-section>
+            <q-item-section avatar>
+              <q-btn color="accent" round icon="add"/>
+            </q-item-section>
+          </q-item>
+        </q-list>
+        <q-inner-loading :showing="loading">
+          <q-spinner size="50px" color="primary" />
+        </q-inner-loading>
+      </q-card>
     </q-dialog>
   </div>
 </template>
@@ -114,22 +116,17 @@ export default {
     TeamFormCard
   },
   data: () => ({
-    formations: [
-      { label: '3-4-3', value: [{ cod_pos: 'DEF', amount: 3 }, { cod_pos: 'MEI', amount: 4 }, { cod_pos: 'ATA', amount: 3 }] },
-      { label: '3-5-2', value: [{ cod_pos: 'DEF', amount: 3 }, { cod_pos: 'MEI', amount: 5 }, { cod_pos: 'ATA', amount: 2 }] },
-      { label: '4-2-4', value: [{ cod_pos: 'DEF', amount: 4 }, { cod_pos: 'MEI', amount: 2 }, { cod_pos: 'ATA', amount: 4 }] },
-      { label: '4-3-3', value: [{ cod_pos: 'DEF', amount: 4 }, { cod_pos: 'MEI', amount: 3 }, { cod_pos: 'ATA', amount: 3 }] },
-      { label: '4-4-2', value: [{ cod_pos: 'DEF', amount: 4 }, { cod_pos: 'MEI', amount: 4 }, { cod_pos: 'ATA', amount: 2 }] },
-      { label: '4-5-1', value: [{ cod_pos: 'DEF', amount: 4 }, { cod_pos: 'MEI', amount: 5 }, { cod_pos: 'ATA', amount: 1 }] },
-      { label: '5-3-2', value: [{ cod_pos: 'DEF', amount: 5 }, { cod_pos: 'MEI', amount: 3 }, { cod_pos: 'ATA', amount: 2 }] },
-      { label: '5-4-1', value: [{ cod_pos: 'DEF', amount: 5 }, { cod_pos: 'MEI', amount: 4 }, { cod_pos: 'ATA', amount: 1 }] }
-    ],
-    formation: { label: '3-4-3', value: [{ cod_pos: 'DEF', amount: 3 }, { cod_pos: 'MEI', amount: 4 }, { cod_pos: 'ATA', amount: 3 }] },
+    formations: [],
+    formation: '',
     squad: [],
     editing: false,
-    loading: false
+    loading: false,
+    positions: [],
+    loadingFormations: false,
+    buyPlayers: false
   }),
   mounted () {
+    this.getAllFormations()
   },
   methods: {
     async saveTeam (team) {
@@ -149,28 +146,36 @@ export default {
         this.loading = false
         console.log(e)
       }
-    }
-  },
-  computed: {
-    gks () {
-      return this.squad.filter((el) => {
-        return el.pos === 'GOL'
-      })
     },
-    def () {
-      return this.squad.filter((el) => {
-        return el.pos === 'DEF'
+    async getAllFormations () {
+      this.loadingFormations = true
+      let response = await this.$api.get('formation')
+      let fmts = response.data
+      response = await this.$api.get('fmupos')
+      let fmupos = response.data
+      response = await this.$api.get('position')
+      this.positions = response.data
+      this.formations = fmts.map((val) => {
+        let dict = (fmupos.filter((el) => {
+          return el.formation === val.id
+        })).reduce(
+          (agg, el) => {
+            agg[el.position] = el.amount
+            return agg
+          }, {}
+        )
+        return {
+          label: val.nome,
+          value: dict
+        }
       })
+      if (this.formations.length) {
+        this.formation = this.formations[0]
+      }
+      this.loadingFormations = false
     },
-    mei () {
-      return this.squad.filter((el) => {
-        return el.pos === 'MEI'
-      })
-    },
-    ata () {
-      return this.squad.filter((el) => {
-        return el.pos === 'ATA'
-      })
+    getPos (pos) {
+      return []
     }
   }
 }
