@@ -3,11 +3,12 @@ mysql:
   command: --default-authentication-plugin=mysql_native_password
   restart: always
   environment:
-    MYSQL_ROOT_PASSWORD: grupobd37
-    MYSQL_USER: grupobd37
-    MYSQL_PASSWORD: grupobd37
-    MYSQL_DATABASE: grupobd37
+    MYSQL_ROOT_PASSWORD: "grupobd37"
+    MYSQL_USER: "grupobd37"
+    MYSQL_PASSWORD: "grupobd37"
+    MYSQL_DATABASE: "grupobd37"
   volumes:
     - "./datadir:/var/lib/mysql"
   ports:
     - "4200:3306"
+    - "33060:33060"
