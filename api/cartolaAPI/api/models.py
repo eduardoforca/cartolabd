@@ -147,6 +147,7 @@ class FMTPos(models.Model):
 
 class PlayerStats(models.Model):
     player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.IntegerField(default=1)
     stat = models.ForeignKey(Stat, on_delete=models.SET_NULL, null=True, blank=True)
     _round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True, blank=True)
 
