@@ -43,7 +43,7 @@
             <q-item-section>
               <q-item-label>{{i['nome']}}</q-item-label>
             </q-item-section>
-            <q-item-section v-if="i['owner'] !== league['creator']" avatar>
+            <q-item-section v-if="(league['creator'] === $store.state.user.user.id || i['owner'] === $store.state.user.user.id) && i['owner'] !== league['creator']" avatar>
               <q-btn color="negative" round icon="clear" @click="removeMember(i.id)" size="xs"/>
             </q-item-section>
           </q-item>
@@ -160,11 +160,11 @@ export default {
     async removeMember (idMember) {
       try {
         let rel = this.allRelationships.findIndex((el) => {
-          return el.club === idMember
+          return el.club === idMember && el.league === this.league['id']
         })
         await this.$api.delete(
           `/clubLeague/${this.allRelationships[rel]['id']}/`)
-        this.allRelationships[rel].splice(rel)
+        this.allRelationships.splice(rel)
       } catch (e) {
         console.log(e)
       }
