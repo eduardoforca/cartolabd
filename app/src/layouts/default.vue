@@ -95,10 +95,28 @@ export default {
       leftDrawerOpen: this.$q.platform.is.desktop
     }
   },
+  async mounted () {
+    let response = await this.$api.get('userClub/')
+    let allTeams = response.data
+    let myTeam = allTeams.find((el) => {
+      return el.owner === this.$store.state.user.user.id
+    })
+    if (myTeam) {
+      this.$store.commit('user/setTeam', { team: myTeam })
+    }
+  },
   methods: {
     logout () {
       this.$store.dispatch('user/logoutUser')
       this.$router.go('/')
+    },
+    loadAll () {
+      let scope = this
+      this.$api.get('player/').then(
+        (response) => {
+          scope.$store.commit('user/setPlayers', response.data)
+        }
+      )
     }
   }
 }

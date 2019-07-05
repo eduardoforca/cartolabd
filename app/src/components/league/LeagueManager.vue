@@ -1,15 +1,12 @@
 <template>
-  <div v-if="$store.state.user.team">
-    Você ainda não tem um time
-    <q-btn to="new">Criar Time</q-btn>
-  </div>
-  <div v-else class="q-pa-lg row items-start justify-between relative-position">
-    <div class="col-md-4 col-12">
+  <div class="q-pa-lg row items-start justify-between relative-position">
+    <div class="col-md-4 col-12" v-if="league">
       <q-card class="q-mb-md" style="max-width: 800px">
         <q-card-section class="bg-secondary card-title text-uppercase text-white">Liga</q-card-section>
         <q-card-section>
           <div class="row justify-around">
-            <badge
+            <badge v-if="!loading"
+              :badge="league.crest"
               :color1="league.color1"
               :color2="league.color2"
               :color3="league.color3"
@@ -32,17 +29,28 @@
           <q-btn @click="addTeams = true" color="primary" v-if="league.creator === $store.state.user.user.id" dense>Adicionar Times</q-btn>
         </div>
       </q-card-section>
-      <q-card-section class="q-mt-md">
+      <q-card-section class="q-mt-md relative-position">
         <q-list bordered separator>
           <q-item v-for="i in members" :key="i['id']">
             <q-item-section avatar>
-              <badge height="50px"/>
+              <badge height="50px"
+              :badge="i.crest"
+              :color1="i.color1"
+              :color2="i.color2"
+              :color3="i.color3"
+              />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{i['name']}}</q-item-label>
+              <q-item-label>{{i['nome']}}</q-item-label>
+            </q-item-section>
+            <q-item-section v-if="i['owner'] !== league['creator']" avatar>
+              <q-btn color="negative" round icon="clear" @click="removeMember(i.id)" size="xs"/>
             </q-item-section>
           </q-item>
         </q-list>
+        <q-inner-loading :showing="loadingMembers">
+          <q-spinner size="50px" color="primary" />
+        </q-inner-loading>
       </q-card-section>
     </q-card>
     <q-dialog v-model="editing">
@@ -52,9 +60,10 @@
       <q-card style="min-width: 40vw" class="relative-position">
         <q-card-section class="bg-secondary card-title text-uppercase text-white">Adicionar Membros</q-card-section>
         <q-list bordered separator>
-          <q-item v-for="i in users" :key="i['id']">
+          <q-item v-for="i in nonMembers" :key="i['id']">
             <q-item-section avatar>
               <badge height="50px"
+              :badge="i.crest"
               :color1="i.color1"
               :color2="i.color2"
               :color3="i.color3"
@@ -87,21 +96,30 @@ export default {
     LeagueFormCard
   },
   data: () => ({
-    members: [],
+    allRelationships: [],
     users: [],
     league: undefined,
     editing: false,
     addTeams: false,
-    loadingTeams: false
+    loading: false,
+    loadingTeams: false,
+    loadingMembers: false
   }),
   async mounted () {
     this.loading = true
-    let response = await this.$api.get(`league/${this.$route.params.league_id}`)
+    let response = await this.$api.get(`league/${this.$route.params.league_id}/`)
     this.league = response.data
     this.loading = false
     this.getAllTeams()
+    this.getMembers()
   },
   methods: {
+    async getMembers () {
+      this.loadingMembers = true
+      let response = await this.$api.get('clubLeague/')
+      this.allRelationships = response.data
+      this.loadingMembers = false
+    },
     async saveLeague (league) {
       this.loading = true
       try {
@@ -122,7 +140,7 @@ export default {
     },
     async getAllTeams () {
       this.loadingTeams = true
-      let response = await this.$api.get('userClub')
+      let response = await this.$api.get('userClub/')
       this.users = response.data
       this.loadingTeams = false
     },
@@ -134,12 +152,47 @@ export default {
         if (response.status !== 201) {
           throw response.statusText
         }
+        this.allRelationships.push(response.data)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async removeMember (idMember) {
+      try {
+        let rel = this.allRelationships.findIndex((el) => {
+          return el.club === idMember
+        })
+        await this.$api.delete(
+          `/clubLeague/${this.allRelationships[rel]['id']}/`)
+        this.allRelationships[rel].splice(rel)
       } catch (e) {
         console.log(e)
       }
     }
   },
   computed: {
+    members () {
+      let rels = this.allRelationships.filter((el) => {
+        return el.league === this.league['id']
+      })
+      return this.users.filter((el) => {
+        let rel = rels.find((rl) => {
+          return rl.club === el.id
+        })
+        return !!rel
+      })
+    },
+    nonMembers () {
+      let rels = this.allRelationships.filter((el) => {
+        return el.league === this.league['id']
+      })
+      return this.users.filter((el) => {
+        let rel = rels.find((rl) => {
+          return rl.club === el.id
+        })
+        return !rel
+      })
+    }
   }
 }
 </script>

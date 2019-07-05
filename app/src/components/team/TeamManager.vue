@@ -13,7 +13,8 @@
         <q-card-section class="bg-secondary card-title text-uppercase text-white">Meu Time</q-card-section>
         <q-card-section>
           <div class="row justify-around">
-            <badge
+            <badge class="col-12"
+            :badge="this.$store.state.user.team.crest"
             :color1="this.$store.state.user.team.color1"
             :color2="this.$store.state.user.team.color2"
             :color3="this.$store.state.user.team.color3"
@@ -149,11 +150,11 @@ export default {
     },
     async getAllFormations () {
       this.loadingFormations = true
-      let response = await this.$api.get('formation')
+      let response = await this.$api.get('formation/')
       let fmts = response.data
-      response = await this.$api.get('fmupos')
+      response = await this.$api.get('fmupos/')
       let fmupos = response.data
-      response = await this.$api.get('position')
+      response = await this.$api.get('position/')
       this.positions = response.data
       this.formations = fmts.map((val) => {
         let dict = (fmupos.filter((el) => {

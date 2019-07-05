@@ -4,8 +4,8 @@ const routes = [
     path: '/',
     component: () => import('layouts/default.vue'),
     redirect: '/home',
-    beforeEnter: (to, from, next) => {
-      store.dispatch('user/fetchUser')
+    beforeEnter: async (to, from, next) => {
+      await store.dispatch('user/fetchUser')
       if (store.state.user.user === null) {
         next('/login')
       } else {

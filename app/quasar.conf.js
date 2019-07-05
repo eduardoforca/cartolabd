@@ -90,9 +90,19 @@ module.exports = function (ctx) {
     },
 
     devServer: {
-      // https: true,
-      // port: 8080,
-      open: true // opens browser window automatically
+      proxy: {
+        // proxy all requests starting with /api to jsonplaceholder
+        '/api': {
+          target: 'http://157.230.153.79/',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api': '/v1'
+          }
+        },
+        '/media': {
+          target: 'http://157.230.153.79/'
+        }
+      }
     },
 
     // animations: 'all', // --- includes all animations
