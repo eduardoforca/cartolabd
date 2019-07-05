@@ -162,7 +162,7 @@ export default {
     allPlayerStats: [],
     allSquads: [],
     allSelected: [],
-    currentRound: 3,
+    currentRound: 10,
     selectedPos: 0
   }),
   mounted () {
