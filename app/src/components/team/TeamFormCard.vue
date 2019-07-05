@@ -114,7 +114,7 @@ export default {
   computed: {
     aTeam () {
       return {
-        // crest: this.selectedCrest,
+        crest: this.selectedCrest,
         nome: this.nome,
         color1: this.color1,
         color2: this.color2,

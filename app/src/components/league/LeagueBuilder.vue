@@ -25,6 +25,9 @@ export default {
           '/league/',
           { ...league, creator: this.$store.state.user.user.id })
         if (response.status === 201) {
+          response = await this.$api.post(
+            '/clubLeague/',
+            { club: this.$store.state.user.team.id, league: response.data.id })
           this.$router.push(`manage/${response.data.id}`)
         } else {
           throw response.statusText

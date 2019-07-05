@@ -12,6 +12,7 @@
           <q-item v-for="i in myLeagues" :key="i['id']" clickable :to="`/leagues/manage/${i['id']}`">
             <q-item-section avatar>
               <badge height="50px"
+              :badge="i.crest"
               :color1="i.color1"
               :color2="i.color2"
               :color3="i.color3"/>
@@ -30,6 +31,7 @@
           <q-item v-for="i in allLeagues" :key="i['id']" clickable :to="`/leagues/manage/${i['id']}`">
             <q-item-section avatar>
               <badge height="50px"
+              :badge="i.crest"
               :color1="i.color1"
               :color2="i.color2"
               :color3="i.color3"/>
@@ -53,19 +55,34 @@ export default {
     Badge
   },
   data: () => ({
-    myLeagues: [],
+    leaguesRelationships: [],
     allLeagues: [],
     loading: false
   }),
   async mounted () {
     this.loading = true
-    let response = await this.$api.get('league')
-    this.myLeagues = this.allLeagues = response.data
+    let responses = await Promise.all([
+      this.$api.get('league/'),
+      this.$api.get('clubLeague/')
+    ])
+    this.allLeagues = responses[0].data
+    this.leaguesRelationships = responses[1].data
     this.loading = false
   },
   methods: {
   },
   computed: {
+    myLeagues () {
+      let rels = this.leaguesRelationships.filter((el) => {
+        return el.club === this.$store.state.user.team['id']
+      })
+      return this.allLeagues.filter((el) => {
+        let rel = rels.find((rl) => {
+          return rl.league === el.id
+        })
+        return !!rel
+      })
+    }
   }
 }
 </script>

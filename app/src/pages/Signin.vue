@@ -56,8 +56,8 @@ export default {
             password: this.password
           })
         if (response.status === 200) {
-          await this.$store.dispatch('user/loginUser', { token: response.data, keep: this.saveCreds })
-          this.$router.go('/home')
+          await this.$store.dispatch('user/loginUser', { token: response.data.token, keep: this.saveCreds })
+          this.$router.push('/home')
           this.loading = false
         } else {
           throw response.statusText

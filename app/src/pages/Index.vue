@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <!-- <img alt="FUT FANTASY" src="~assets/quasar-logo-full.svg"> -->
+    <h6>BEM-VINDO</h6>
   </q-page>
 </template>
 

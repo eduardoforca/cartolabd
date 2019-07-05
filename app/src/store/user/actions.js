@@ -1,24 +1,22 @@
 import axios from 'axios'
-export function fetchUser ({ commit, dispatch, state, getters }) {
-  let user = JSON.parse(window.localStorage.getItem('user'))
-  if (user) {
-    commit('setUser', { user: user, keep: true })
+export async function fetchUser ({ commit, dispatch, state, getters }) {
+  let token = window.localStorage.getItem('token')
+  if (token) {
+    await dispatch('loginUser', { token: token, keep: true })
   } else {
-    user = JSON.parse(window.sessionStorage.getItem('user'))
-    if (user) {
-      commit('setUser', { user: user })
+    token = window.sessionStorage.getItem('token')
+    if (token) {
+      await dispatch('loginUser', { token: token })
     }
   }
 }
 
-export async function loginUser ({ commit, dispatch, state, getters }, { token, keep }) {
+export async function loginUser ({ commit, dispatch, state, getters }, { token, keep = false }) {
   commit('setToken', { token: token, keep: keep })
-  let response = await axios.post('http://157.230.153.79/v1/me/',
-    {
-      token: token
-    })
+  axios.defaults.headers.common['Authorization'] = 'Token ' + token
+  let response = await axios.get('api/usuarios/me')
   if (response.status === 200) {
-    commit('setUser', { user: response.data, keep: keep })
+    commit('setUser', { user: response.data })
   } else {
     throw response.statusText
   }

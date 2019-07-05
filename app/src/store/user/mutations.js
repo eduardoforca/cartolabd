@@ -1,9 +1,4 @@
-export function setUser (state, { user, keep = false }) {
-  if (keep) {
-    window.localStorage.setItem('user', JSON.stringify(user))
-  } else {
-    window.sessionStorage.setItem('user', JSON.stringify(user))
-  }
+export function setUser (state, { user }) {
   state.user = user
 }
 
@@ -27,8 +22,6 @@ export function unsetToken (state) {
 }
 
 export function unsetUser (state) {
-  window.localStorage.removeItem('user')
-  window.sessionStorage.removeItem('user')
   state.user = null
 }
 
